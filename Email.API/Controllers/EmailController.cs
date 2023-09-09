@@ -1,4 +1,5 @@
-﻿using Email.Service.Infrastructure;
+﻿using Email.Model.DTOs;
+using Email.Service.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,16 @@ namespace Email.API.Controllers
         public IActionResult Get()
         {
             return Ok(_emailService.IsTrue());
+        }
+        [HttpPost("AddEmailInformation")]
+        public IActionResult AddEmailInformation(AddEmailDTO data)
+        {
+            return Ok(_emailService.AddEmailInformation(data));
+        }
+        [HttpGet("GetEmailInformationList")]
+        public IActionResult GetEmailInformationList()
+        {
+            return Ok(_emailService.GetEmailInformationList());
         }
     }
 }
