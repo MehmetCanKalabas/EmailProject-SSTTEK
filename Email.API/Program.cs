@@ -4,9 +4,11 @@ using Email.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json");
+
+
 // Add services to the container.
 builder.Services.AddScoped<IEmailService, EmailService>();
-
 
 builder.Services.AddDbContext<MasterDBContext>();
 builder.Services.AddControllers();

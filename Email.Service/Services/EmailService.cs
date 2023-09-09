@@ -65,6 +65,39 @@ namespace Email.Service.Services
             }
             return result;
         }
+
+        //public async Task<bool> DeleteMailInformation(int id)
+        //{
+        //    bool result = false;
+        //    if (id != null)
+        //    {
+        //        using (MasterDBContext db = new MasterDBContext())
+        //        {
+        //           var mailToDelete = db.EmailInformations.Where(x=>x.Id == id);
+        //            if (mailToDelete != null)
+        //            {
+        //                db.Remove(mailToDelete);
+        //                db.SaveChanges();
+        //                result = true;
+        //            }
+        //        }
+        //    }
+        //    return result;
+        //}
+
+        public async Task<bool> DeleteMailAsync(int id)
+        {
+            using (MasterDBContext db = new MasterDBContext())
+            {
+                var mailToDelete = await db.EmailInformations.FirstOrDefaultAsync(x => x.Id == id);
+                if (mailToDelete != null)
+                {
+                    mailToDelete.IsDelete = true;
+                    db.SaveChanges();
+                }
+            }
+            return true;
+        }
         #endregion
         #region Email_Log
 

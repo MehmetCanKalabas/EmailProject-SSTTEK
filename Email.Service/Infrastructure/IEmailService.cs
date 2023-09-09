@@ -10,6 +10,7 @@ namespace Email.Service.Infrastructure
     public interface IEmailService
     {
         bool AddEmailInformation(AddEmailDTO model);
+        Task<bool> DeleteMailAsync(int id);
         List<GetEmailDTO> GetEmailInformationList();
         public bool IsTrue();
     }

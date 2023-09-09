@@ -14,4 +14,8 @@ namespace Email.Model.Entities
         public string UserName { get; set; }
         public string Password { get; set; }
     }
+    public class EmailServiceConfiguration
+    {
+        public SMTP_SETTING SmtpSettings { get; set; }
+    }
 }
