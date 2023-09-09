@@ -9,8 +9,8 @@ namespace Email.Model.Entities
 {
     public class EMAIL_LOG : BASE_ENTITY
     {
-        [MaxLength(50)]
-        public string From { get; set; }
+        //[MaxLength(50)]
+        //public string From { get; set; }
         [MaxLength(50)]
         public string To { get; set; }
         [MaxLength(50)]

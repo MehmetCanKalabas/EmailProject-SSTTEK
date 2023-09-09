@@ -3,9 +3,12 @@ using Email.Service.Infrastructure;
 using Email.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
 using System.Net;
 using Email.Model.Entities;
+using System;
+using System.Threading.Tasks; // Eksik using bildirimi
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace Email.API.Controllers
 {
@@ -18,6 +21,7 @@ namespace Email.API.Controllers
         {
             _emailService = emailService;
         }
+
         [HttpGet]
         public IActionResult Get()
         {
@@ -49,47 +53,25 @@ namespace Email.API.Controllers
         [HttpPost("SendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] EMAIL_LOG emailRequest)
         {
-            try
-            {
-                SMTP_SETTING smtpSettings = new SMTP_SETTING();
+            MimeMessage mimeMessage = new MimeMessage();
+            MailboxAddress mailboxAddressFrom = new MailboxAddress("Can", "mehmetcankalabas.sttek@gmail.com");
+            mimeMessage.From.Add(mailboxAddressFrom);
 
-                var smtpClient = new SmtpClient
-                {
-                    Host = smtpSettings.HostName,  // SMTP sunucu adresi
-                    Port = smtpSettings.Port, // SMTP sunucu portu (genellikle 587 veya 465)
-                    EnableSsl = smtpSettings.SSL, // SSL kullanılsın mı?
-                    Credentials = new NetworkCredential(smtpSettings.UserName, smtpSettings.Password) // SMTP kimlik bilgileri
-                };
+            MailboxAddress mailboxAddressTo = new MailboxAddress("User", "kalabascancan@gmail.com");
+            mimeMessage.To.Add(mailboxAddressTo);
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.TextBody = emailRequest.Body;
+            mimeMessage.Body = bodyBuilder.ToMessageBody();
 
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(smtpSettings.UserName), // Gönderen e-posta adresi
-                    Subject = emailRequest.Subject,
-                    Body = emailRequest.Body,
-                    IsBodyHtml = true
-                };
+            mimeMessage.Subject = emailRequest.Subject;
 
-                mailMessage.To.Add(emailRequest.To);
+            SmtpClient client = new SmtpClient();
+            client.Connect("smtp.gmail.com", 587, false);
+            client.Authenticate("mehmetcankalabas.sttek@gmail.com", "zttmnjebzobjfndv");
+            client.Send(mimeMessage);
+            client.Disconnect(true);
 
-                if (!string.IsNullOrEmpty(emailRequest.CCC))
-                {
-                    mailMessage.CC.Add(emailRequest.BCC);
-                }
-
-                // BCC (Blind Carbon Copy) eklemek için
-                if (!string.IsNullOrEmpty(emailRequest.BCC))
-                {
-                    mailMessage.Bcc.Add(emailRequest.BCC);
-                }
-
-                await smtpClient.SendMailAsync(mailMessage);
-
-                return Ok("E-posta başarıyla gönderildi.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"E-posta gönderme işlemi başarısız oldu: {ex.Message}");
-            }
+            return Ok();
         }
     }
 }

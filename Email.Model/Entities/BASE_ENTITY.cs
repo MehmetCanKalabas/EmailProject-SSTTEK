@@ -15,6 +15,6 @@ namespace Email.Model.Entities
         public int Id { get; set; }
         public DateTime? CreatedDate { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
-        public bool IsDelete { get; set; }
+        public bool IsDelete { get; set; } = false;
     }
 }
