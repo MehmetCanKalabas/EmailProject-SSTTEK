@@ -18,5 +18,11 @@ namespace Email.Model.Context
         public DbSet<EMAIL_LOG> EmailLogs { get; set; }
         public DbSet<EMAIL_INFORMATION> EmailInformations { get; set; }
         public DbSet<SMTP_SETTING> SMTPSettings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

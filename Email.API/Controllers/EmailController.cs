@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Email.Model.Entities;
 using System;
-using System.Threading.Tasks; // Eksik using bildirimi
+using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
 
@@ -53,25 +53,11 @@ namespace Email.API.Controllers
         [HttpPost("SendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] EMAIL_LOG emailRequest)
         {
-            MimeMessage mimeMessage = new MimeMessage();
-            MailboxAddress mailboxAddressFrom = new MailboxAddress("Can", "mehmetcankalabas.sttek@gmail.com");
-            mimeMessage.From.Add(mailboxAddressFrom);
-
-            MailboxAddress mailboxAddressTo = new MailboxAddress("User", "kalabascancan@gmail.com");
-            mimeMessage.To.Add(mailboxAddressTo);
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.TextBody = emailRequest.Body;
-            mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-            mimeMessage.Subject = emailRequest.Subject;
-
-            SmtpClient client = new SmtpClient();
-            client.Connect("smtp.gmail.com", 587, false);
-            client.Authenticate("mehmetcankalabas.sttek@gmail.com", "zttmnjebzobjfndv");
-            client.Send(mimeMessage);
-            client.Disconnect(true);
-
-            return Ok();
+            var result = await _emailService.SendMailAsync(emailRequest);
+            if (result != null)
+                return Ok(result);
+            else
+                return BadRequest();
         }
     }
 }

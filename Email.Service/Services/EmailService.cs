@@ -4,16 +4,28 @@ using Email.Model.Entities;
 using Email.Service.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using MailKit.Net.Smtp;
 
 namespace Email.Service.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly SMTP_SETTING _smtpSetting;
+        private readonly MasterDBContext _masterDBContext;
+        public EmailService(IOptions<SMTP_SETTING> smtpSetting, MasterDBContext masterDBContext)
+        {
+            _smtpSetting = smtpSetting.Value;
+            _masterDBContext = masterDBContext;
+        }
+
         public bool IsTrue()
         {
             return true;
@@ -66,25 +78,6 @@ namespace Email.Service.Services
             return result;
         }
 
-        //public async Task<bool> DeleteMailInformation(int id)
-        //{
-        //    bool result = false;
-        //    if (id != null)
-        //    {
-        //        using (MasterDBContext db = new MasterDBContext())
-        //        {
-        //           var mailToDelete = db.EmailInformations.Where(x=>x.Id == id);
-        //            if (mailToDelete != null)
-        //            {
-        //                db.Remove(mailToDelete);
-        //                db.SaveChanges();
-        //                result = true;
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-
         public async Task<bool> DeleteMailAsync(int id)
         {
             using (MasterDBContext db = new MasterDBContext())
@@ -101,6 +94,44 @@ namespace Email.Service.Services
         #endregion
         #region Email_Log
 
+        public async Task<bool> SendMailAsync(EMAIL_LOG emailRequest)
+        {
+            MimeMessage mimeMessage = new MimeMessage();
+            MailboxAddress mailboxAddressFrom = new MailboxAddress("MEHMETCAN", "mehmetcankalabas.sttek@gmail.com");
+            mimeMessage.From.Add(mailboxAddressFrom);
+
+            MailboxAddress mailboxAddressTo = new MailboxAddress("Alıcı", "kalabascancan@gmail.com");
+            mimeMessage.To.Add(mailboxAddressTo);
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.TextBody = emailRequest.Body;
+
+            mimeMessage.Body = bodyBuilder.ToMessageBody();
+            mimeMessage.Subject = emailRequest.Subject;
+
+            SmtpClient client = new SmtpClient();
+            client.Connect("smtp.gmail.com", 587, false);
+            client.Authenticate("mehmetcankalabas.sttek@gmail.com", "zttmnjebzobjfndv");
+            client.Send(mimeMessage);
+            client.Disconnect(true);
+
+            return true;
+        }
+
+        public async Task SaveSentEmailAsync(EMAIL_LOG emailRequest)
+        {
+            using (MasterDBContext masterDBContext = new MasterDBContext()) 
+            {
+                await _masterDBContext.EmailLogs.AddAsync(emailRequest);
+                await _masterDBContext.SaveChangesAsync();
+            }
+            //var emailLog = new EMAIL_LOG
+            //{
+            //    Subject = emailRequest.Subject,
+            //    Body = emailRequest.Body,
+            //    CreatedDate = DateTime.Now,
+            //    CreatedBy = emailRequest.CreatedBy,
+            //};
+        }
         #endregion
     }
 }

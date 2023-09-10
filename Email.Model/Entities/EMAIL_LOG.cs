@@ -13,10 +13,10 @@ namespace Email.Model.Entities
         //public string From { get; set; }
         [MaxLength(50)]
         public string To { get; set; }
-        [MaxLength(50)]
-        public string BCC { get; set; }
-        [MaxLength(50)]
-        public string CCC { get; set; }
+        //[MaxLength(50)]
+        //public string BCC { get; set; }
+        //[MaxLength(50)]
+        //public string CCC { get; set; }
         [MaxLength(50)]
         public string Subject { get; set; }
         [MaxLength(500)]

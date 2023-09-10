@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33717.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.API", "Email.API\Email.API.csproj", "{0BAD83B5-751A-4FA3-B133-4DC7D2DA79C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.API", "Email.API\Email.API.csproj", "{0BAD83B5-751A-4FA3-B133-4DC7D2DA79C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Service", "Email.Service\Email.Service.csproj", "{4F7B7D6D-924F-49FD-A820-D0252ACC78CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.Service", "Email.Service\Email.Service.csproj", "{4F7B7D6D-924F-49FD-A820-D0252ACC78CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Model", "Email.Model\Email.Model.csproj", "{760A5086-70AD-4B0D-AE51-10AFE01F3908}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Email.Model", "Email.Model\Email.Model.csproj", "{760A5086-70AD-4B0D-AE51-10AFE01F3908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

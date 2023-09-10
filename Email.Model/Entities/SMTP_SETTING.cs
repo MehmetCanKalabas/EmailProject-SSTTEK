@@ -9,8 +9,8 @@ namespace Email.Model.Entities
     public class SMTP_SETTING : BASE_ENTITY
     {
         public string HostName { get; set; }
-        public Int32 Port { get; set; }
-        public bool SSL { get; set; } = true;
+        public int Port { get; set; }
+        public bool SSL { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
     }
