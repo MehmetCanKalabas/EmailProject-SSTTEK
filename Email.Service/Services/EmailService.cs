@@ -119,8 +119,8 @@ namespace Email.Service.Services
             mimeMessage.Subject = emailRequest.Subject;
 
             SmtpClient client = new SmtpClient();
-            client.Connect("smtp.gmail.com", 587, false);
-            client.Authenticate("mehmetcankalabas.sttek@gmail.com", "zttmnjebzobjfndv");
+            client.Connect(_smtpSetting.HostName, _smtpSetting.Port, false);
+            client.Authenticate(_smtpSetting.UserName, _smtpSetting.Password);
             client.Send(mimeMessage);
             client.Disconnect(true);
 
