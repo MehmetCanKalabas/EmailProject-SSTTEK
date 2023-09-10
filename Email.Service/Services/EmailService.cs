@@ -20,6 +20,7 @@ namespace Email.Service.Services
     {
         private readonly SMTP_SETTING _smtpSetting;
         private readonly MasterDBContext _masterDBContext;
+        private readonly HelperService _helperService;
         public EmailService(IOptions<SMTP_SETTING> smtpSetting, MasterDBContext masterDBContext)
         {
             _smtpSetting = smtpSetting.Value;
@@ -42,18 +43,21 @@ namespace Email.Service.Services
             bool result = false;
             if (!model.Email.IsNullOrEmpty())
             {
-                using (MasterDBContext db = new MasterDBContext())
+                if (HelperService.IsValidMail(model.Email))
                 {
-                    EMAIL_INFORMATION email = db.EmailInformations.Where(w => w.Email.Equals(model.Email)).FirstOrDefault();
-                    if (email == null)
+                    using (MasterDBContext db = new MasterDBContext())
                     {
-                        email = new EMAIL_INFORMATION();
-                        email.Email = model.Email;
-                        email.Name = model.Name;
-                        email.Surname = model.Surname;
-                        db.Add(email);
-                        db.SaveChanges();
-                        result = true;
+                        EMAIL_INFORMATION email = db.EmailInformations.Where(w => w.Email.Equals(model.Email)).FirstOrDefault();
+                        if (email == null)
+                        {
+                            email = new EMAIL_INFORMATION();
+                            email.Email = model.Email;
+                            email.Name = model.Name;
+                            email.Surname = model.Surname;
+                            db.Add(email);
+                            db.SaveChanges();
+                            result = true;
+                        }
                     }
                 }
             }
@@ -126,18 +130,19 @@ namespace Email.Service.Services
 
         public async Task SaveSentEmailAsync(EMAIL_LOG emailRequest)
         {
-            using (MasterDBContext masterDBContext = new MasterDBContext())
-            {
-                await _masterDBContext.EmailLogs.AddAsync(emailRequest);
-                await _masterDBContext.SaveChangesAsync();
-            }
-            //var emailLog = new EMAIL_LOG
+            //using (MasterDBContext masterDBContext = new MasterDBContext())
             //{
-            //    Subject = emailRequest.Subject,
-            //    Body = emailRequest.Body,
-            //    CreatedDate = DateTime.Now,
-            //    CreatedBy = emailRequest.CreatedBy,
-            //};
+            //    await _masterDBContext.EmailLogs.AddAsync(emailRequest);
+            //    await _masterDBContext.SaveChangesAsync();
+            //}
+            var emailLog = new EMAIL_LOG
+            {
+                Subject = emailRequest.Subject,
+                Body = emailRequest.Body,
+                CreatedDate = DateTime.Now,
+                CreatedBy = emailRequest.CreatedBy,
+            };
+            _masterDBContext.EmailLogs.Add(emailLog);
         }
 
     }

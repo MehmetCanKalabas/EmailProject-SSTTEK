@@ -10,7 +10,8 @@ namespace Email.Service.Services
     {
         public static bool IsValidMail(string email)
         {
-            if (email.Contains("@"))
+            string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            if (System.Text.RegularExpressions.Regex.IsMatch(email, pattern))
             {
                 return true;
             }
