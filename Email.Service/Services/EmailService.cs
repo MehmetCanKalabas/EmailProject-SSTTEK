@@ -26,11 +26,17 @@ namespace Email.Service.Services
             _masterDBContext = masterDBContext;
         }
 
-        public bool IsTrue()
-        {
-            return true;
-        }
         #region Email_info
+        public Task GetByIdAsync(int id)
+        {
+            var result = _masterDBContext.EmailInformations.FirstOrDefaultAsync(x => x.Id == id);
+            return result;
+        }
+        public Task<bool> IsEmailExist(string email)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool AddEmailInformation(AddEmailDTO model)
         {
             bool result = false;
@@ -97,10 +103,10 @@ namespace Email.Service.Services
         public async Task<bool> SendMailAsync(EMAIL_LOG emailRequest)
         {
             MimeMessage mimeMessage = new MimeMessage();
-            MailboxAddress mailboxAddressFrom = new MailboxAddress("MEHMETCAN", "mehmetcankalabas.sttek@gmail.com");
+            MailboxAddress mailboxAddressFrom = new MailboxAddress("MEHMETCAN", _smtpSetting.UserName);
             mimeMessage.From.Add(mailboxAddressFrom);
 
-            MailboxAddress mailboxAddressTo = new MailboxAddress("Alıcı", "kalabascancan@gmail.com");
+            MailboxAddress mailboxAddressTo = new MailboxAddress("Alıcı", emailRequest.To);
             mimeMessage.To.Add(mailboxAddressTo);
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.TextBody = emailRequest.Body;
@@ -114,12 +120,13 @@ namespace Email.Service.Services
             client.Send(mimeMessage);
             client.Disconnect(true);
 
+            await SaveSentEmailAsync(emailRequest);
             return true;
         }
 
         public async Task SaveSentEmailAsync(EMAIL_LOG emailRequest)
         {
-            using (MasterDBContext masterDBContext = new MasterDBContext()) 
+            using (MasterDBContext masterDBContext = new MasterDBContext())
             {
                 await _masterDBContext.EmailLogs.AddAsync(emailRequest);
                 await _masterDBContext.SaveChangesAsync();
@@ -132,6 +139,7 @@ namespace Email.Service.Services
             //    CreatedBy = emailRequest.CreatedBy,
             //};
         }
-        #endregion
+
     }
 }
+#endregion

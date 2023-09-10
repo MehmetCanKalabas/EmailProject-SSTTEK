@@ -14,7 +14,8 @@ namespace Email.Service.Infrastructure
         Task SaveSentEmailAsync(EMAIL_LOG emailRequest);
         Task<bool> SendMailAsync(EMAIL_LOG emailRequest);
         Task<bool> DeleteMailAsync(int id);
+        Task GetByIdAsync(int id);
+        Task<bool> IsEmailExist(string email);
         List<GetEmailDTO> GetEmailInformationList();
-        public bool IsTrue();
     }
 }

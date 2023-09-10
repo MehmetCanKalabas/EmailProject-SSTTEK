@@ -22,10 +22,16 @@ namespace Email.API.Controllers
             _emailService = emailService;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            return Ok(_emailService.IsTrue());
+            return Ok (_emailService.GetByIdAsync(id));
+        }
+
+        [HttpGet("IsEmailExist/{email}")]
+        public IActionResult IsEmailExist(string email)
+        {
+            return Ok(_emailService.IsEmailExist(email));
         }
 
         [HttpGet("GetEmailInformationList")]
@@ -54,7 +60,7 @@ namespace Email.API.Controllers
         public async Task<IActionResult> SendEmail([FromBody] EMAIL_LOG emailRequest)
         {
             var result = await _emailService.SendMailAsync(emailRequest);
-            if (result != null)
+            if (result)
                 return Ok(result);
             else
                 return BadRequest();
